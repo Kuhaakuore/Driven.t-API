@@ -1,4 +1,9 @@
-# Logs
+dist
+node_modules
+.env*
+!.env.example
+yarn.lock
+.vsc# Logs
 logs
 *.log
 npm-debug.log*
