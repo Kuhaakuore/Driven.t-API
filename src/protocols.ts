@@ -10,3 +10,24 @@ export type RequestError = {
   name: string;
   message: string;
 };
+
+export type AddressType = {
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  ibge: string;
+  gia: string;
+  ddd: string;
+  siafi: string;
+};
+
+export type AddressData = {
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+}
