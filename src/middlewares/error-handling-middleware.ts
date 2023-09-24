@@ -20,19 +20,19 @@ export function handleApplicationErrors(
     });
   }
 
-  if (err.name === 'InvalidCredentialsError' || err.name === 'JsonWebTokenError') {
+  if (err.name === 'InvalidCredentialsError' || err.name === 'JsonWebTokenError' || err.name === 'UnauthorizedAccessError') {
     return res.status(httpStatus.UNAUTHORIZED).send({
       message: err.message,
     });
   }
 
-  if (err.name === 'InvalidDataError' || err.name === 'InvalidCepError'  || err.name === 'EnrollmentNotFound') {
+  if (err.name === 'InvalidDataError' || err.name === 'InvalidCepError'  || err.name === 'EnrollmentNotFound' || err.name === 'MissingTicketIdError') {
     return res.status(httpStatus.BAD_REQUEST).send({
       message: err.message,
     });
   }
 
-  if (err.name === 'NotFoundError' || err.name === 'TicketNotFoundError' || err.name === 'UserEnrollmentNotFoundError') {
+  if (err.name === 'NotFoundError' || err.name === 'TicketNotFoundError' || err.name === 'UserEnrollmentNotFoundError' || err.name === 'InvalidTicketIdError') {
     return res.status(httpStatus.NOT_FOUND).send({
       message: err.message,
     });

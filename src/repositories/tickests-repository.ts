@@ -19,8 +19,15 @@ async function createTicket(data: CreateTicketData) {
   });
 }
 
+async function getTicket(ticketId: number): Promise<Ticket> {
+  return prisma.ticket.findFirst({
+    where: { id: ticketId },
+  });
+}
+
 export const ticketsRepository = {
   getTicketsTypes,
   getTickets,
   createTicket,
+  getTicket,
 };

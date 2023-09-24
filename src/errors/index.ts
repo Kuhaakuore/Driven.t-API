@@ -12,3 +12,6 @@ export * from './invalid-cep-error';
 export * from './unauthorized-error';
 export * from './ticket-not-found-error';
 export * from './user-enrollment-not-found-error';
+export * from './missing-ticket-id-error';
+export * from './invalid-ticket-id-error';
+export * from './unauthorized-access-error';
