@@ -23,14 +23,14 @@ async function getTicketPayment(ticketId: number, userId: number): Promise<Payme
 async function createTicketPayment(ticketId: number, userId: number, cardData: CardData): Promise<Payment> {
   const ticket = await ticketsRepository.getTicket(ticketId);
 
-  if (!ticket) throw invalidTicketIdError();
-
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-
-  if (ticket.enrollmentId !== enrollment.id) throw unauthorizedAccessError();
-
+  if (!ticket || !ticketId) throw invalidTicketIdError();
+  
+  const enrollment = await enrollmentRepository.findWithAddressByEnrollmentId(ticket.enrollmentId);
+  
+  if (!enrollment || enrollment.userId !== userId) throw unauthorizedAccessError();
+  
   const ticketType: TicketType = await ticketsRepository.getTicketType(ticket.ticketTypeId);
-
+  
   const paymentData: CreatePaymentData = {
     ticketId,
     value: ticketType.price,
