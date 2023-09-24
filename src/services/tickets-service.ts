@@ -1,30 +1,27 @@
-import { ticketsRepository } from "@/repositories";
-import { TicketType } from "@prisma/client";
-
-// async function getAddressFromCEP(cep: string): Promise<AddressEnrollment> {
-//   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
-
-//   if (!result.data || result.data.erro) {
-//     throw invalidCepError();
-//   }
-
-//   const { bairro, localidade, uf, complemento, logradouro } = result.data;
-//   const address: AddressEnrollment = {
-//     bairro,
-//     cidade: localidade,
-//     uf,
-//     complemento,
-//     logradouro,
-//   };
-
-//   return address;
-// }
+import { userEnrollmentNotFoundError, ticketNotFoundError } from '@/errors';
+import { enrollmentRepository, ticketsRepository } from '@/repositories';
+import { Ticket, TicketType } from '@prisma/client';
 
 async function getTicketsTypes(): Promise<Array<TicketType>> {
   const result = await ticketsRepository.getTicketsTypes();
   return result;
 }
 
+async function getTickets(userId: number): Promise<Ticket> {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+
+  if (!enrollment) throw userEnrollmentNotFoundError()
+
+  const enrollmentId = enrollment.id;
+
+  const result = await ticketsRepository.getTickets(enrollmentId);
+
+  if (!result) throw ticketNotFoundError();
+
+  return result;
+}
+
 export const ticketsService = {
   getTicketsTypes,
+  getTickets,
 };

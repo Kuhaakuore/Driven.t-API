@@ -9,3 +9,6 @@ export * from './invalid-credentials-error';
 export * from './duplicate-email-error';
 export * from './enrollment-not-found-error';
 export * from './invalid-cep-error';
+export * from './unauthorized-error';
+export * from './ticket-not-found-error';
+export * from './user-enrollment-not-found-error';
