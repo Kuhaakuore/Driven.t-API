@@ -11,8 +11,8 @@ export type RequestError = {
   message: string;
 };
 
-export type CEP = {
-  cep: string;
+export type ViaCEPAddressError = {
+  error: boolean;
 };
 
 export type AddressEnrollment = {
@@ -23,19 +23,6 @@ export type AddressEnrollment = {
   uf: string;
 };
 
-export type ViaCEPError = {
-  erro: boolean;
-};
-
-export type ViaCEPResponse = {
+export type CEP = {
   cep: string;
-  logradouro: string;
-  complemento: string;
-  bairro: string;
-  localidade: string;
-  uf: string;
-  ibge: string;
-  gia: string;
-  ddd: string;
-  siafi: string;
 };
