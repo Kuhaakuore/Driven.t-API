@@ -1,32 +1,32 @@
 import { Address, Enrollment } from '@prisma/client';
 import { request } from '@/utils/request';
-import { requestError } from '@/errors';
+import { invalidCepError, enrollmentWithAddressNotFound } from '@/errors';
 import { addressRepository, CreateAddressParams, enrollmentRepository, CreateEnrollmentParams } from '@/repositories';
 import { exclude } from '@/utils/prisma-utils';
-import { AddressData, AddressType } from '@/protocols';
+import { AddressEnrollment, ViaCEPError, ViaCEPResponse } from '@/protocols';
 
-// TODO - Receber o CEP por parâmetro nesta função.
 async function getAddressFromCEP(cep: string) {
-  // FIXME: está com CEP fixo!
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
-  const { logradouro, complemento, bairro, localidade: cidade, uf } = result.data as AddressType;
-  // TODO: Tratar regras de negócio e lanças eventuais erros
-  if (!logradouro) throw requestError(400, 'Bad Request');
-  // FIXME: não estamos interessados em todos os campos
-  const data: AddressData = {
+
+  const { logradouro, complemento, bairro, localidade: cidade, uf } = result.data as ViaCEPResponse;
+
+  if (!result.data || (result.data as ViaCEPError).erro) throw invalidCepError();
+
+  const address: AddressEnrollment = {
     logradouro,
     complemento,
     bairro,
     cidade,
     uf,
   };
-  return data;
+
+  return address;
 }
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {
   const enrollmentWithAddress = await enrollmentRepository.findWithAddressByUserId(userId);
 
-  if (!enrollmentWithAddress) throw requestError(400, 'Bad Request');
+  if (!enrollmentWithAddress) throw enrollmentWithAddressNotFound();
 
   const [firstAddress] = enrollmentWithAddress.Address;
   const address = getFirstAddress(firstAddress);
