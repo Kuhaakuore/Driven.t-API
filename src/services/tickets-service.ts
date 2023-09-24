@@ -42,8 +42,25 @@ async function createTicket(ticketTypeId: number, userId: number): Promise<Ticke
   return ticket;
 }
 
+async function getTicketType(ticketTypeId: number): Promise<TicketType> {
+  const result = await ticketsRepository.getTicketType(ticketTypeId);
+  return result;
+}
+
+async function payTicket(ticketId: number) {
+  await ticketsRepository.payTicket(ticketId);
+}
+
+async function getTicket(ticketId: number): Promise<Ticket> {
+  const result: Ticket = await ticketsRepository.getTicket(ticketId);
+  return result;
+}
+
 export const ticketsService = {
   getTicketsTypes,
   getTickets,
   createTicket,
+  getTicketType,
+  payTicket,
+  getTicket,
 };
