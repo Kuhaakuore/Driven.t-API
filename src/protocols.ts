@@ -29,27 +29,23 @@ export type CEP = {
   cep: string;
 };
 
-export type TicketTypeId = {
+export type CreateTicketParams = Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>;
+
+export type InputTicketBody = {
   ticketTypeId: number;
 };
 
-export type TicketId = {
-  ticketId: number;
-};
-
-export type CreateTicketData = Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>;
-
-export type CardData = {
+export type CardPaymentParams = {
   issuer: string;
-  number: number;
+  number: string;
   name: string;
-  expirationDate: Date;
-  cvv: number;
+  expirationDate: string;
+  cvv: string;
 };
 
-export type TicketPaymentData = {
+export type InputPaymentBody = {
   ticketId: number;
-  cardData: CardData;
+  cardData: CardPaymentParams;
 };
 
-export type CreatePaymentData = Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>;
+export type PaymentParams = Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>;

@@ -1,6 +1,6 @@
-import { Ticket } from '@prisma/client';
 import Joi from 'joi';
+import { InputTicketBody } from '@/protocols';
 
-export const createTicketSchema = Joi.object<Ticket>({
+export const ticketSchema = Joi.object<InputTicketBody>({
   ticketTypeId: Joi.number().required(),
 });

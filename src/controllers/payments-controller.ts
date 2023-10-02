@@ -1,21 +1,21 @@
 import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
+import { InputPaymentBody } from '@/protocols';
 import { paymentsService } from '@/services';
-import { Payment } from '@prisma/client';
 
-export async function getTicketPayment(req: AuthenticatedRequest, res: Response) {
-    const { ticketId } = req.query;
-    const { userId } = req;
-    const payment: Payment = await paymentsService.getTicketPayment(Number(ticketId), userId);
+export async function getPaymentByTicketId(req: AuthenticatedRequest, res: Response) {
+  const ticketId = Number(req.query.ticketId);
+  const { userId } = req;
 
-    return res.status(httpStatus.OK).send(payment);
+  const payment = await paymentsService.getPaymentByTicketId(userId, ticketId);
+  return res.status(httpStatus.OK).send(payment);
 }
 
-export async function createTicketPayment(req: AuthenticatedRequest, res: Response) {
-    const { ticketId, cardData } = req.body;
-    const { userId } = req;
-    const payment: Payment = await paymentsService.createTicketPayment(Number(ticketId), userId, cardData);
+export async function paymentProcess(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { ticketId, cardData } = req.body as InputPaymentBody;
 
-    return res.status(httpStatus.OK).send(payment);
+  const payment = await paymentsService.paymentProcess(ticketId, userId, cardData);
+  res.status(httpStatus.OK).send(payment);
 }

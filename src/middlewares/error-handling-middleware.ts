@@ -20,19 +20,19 @@ export function handleApplicationErrors(
     });
   }
 
-  if (err.name === 'InvalidCredentialsError' || err.name === 'JsonWebTokenError' || err.name === 'UnauthorizedAccessError') {
+  if (err.name === 'InvalidCredentialsError' || err.name === 'JsonWebTokenError') {
     return res.status(httpStatus.UNAUTHORIZED).send({
       message: err.message,
     });
   }
 
-  if (err.name === 'InvalidDataError' || err.name === 'InvalidCepError'  || err.name === 'EnrollmentNotFound' || err.name === 'MissingTicketIdError') {
+  if (err.name === 'InvalidDataError') {
     return res.status(httpStatus.BAD_REQUEST).send({
       message: err.message,
     });
   }
 
-  if (err.name === 'NotFoundError' || err.name === 'TicketNotFoundError' || err.name === 'UserEnrollmentNotFoundError' || err.name === 'InvalidTicketIdError') {
+  if (err.name === 'NotFoundError') {
     return res.status(httpStatus.NOT_FOUND).send({
       message: err.message,
     });
@@ -60,6 +60,12 @@ export function handleApplicationErrors(
 
   if (err.hasOwnProperty('status') && err.name === 'RequestError') {
     return res.status((err as RequestError).status).send({
+      message: err.message,
+    });
+  }
+
+  if (err.name === 'PaymentRequiredError') {
+    return res.status(httpStatus.PAYMENT_REQUIRED).send({
       message: err.message,
     });
   }

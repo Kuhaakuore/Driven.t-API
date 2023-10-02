@@ -1,53 +1,43 @@
-import { invalidTicketIdError, missingTicketIdError, unauthorizedAccessError } from '@/errors';
-import { Payment, TicketType } from '@prisma/client';
-import { paymentsRepository, ticketsRepository } from '@/repositories';
-import { enrollmentRepository } from '@/repositories';
-import { CardData, CreatePaymentData } from '@/protocols';
+import { invalidDataError, notFoundError, unauthorizedError } from '@/errors';
+import { CardPaymentParams, PaymentParams } from '@/protocols';
+import { enrollmentRepository, paymentsRepository, ticketsRepository } from '@/repositories';
 
-async function getTicketPayment(ticketId: number, userId: number): Promise<Payment> {
-  if (!ticketId) throw missingTicketIdError();
+async function verifyTicketAndEnrollment(userId: number, ticketId: number) {
+  if (!ticketId || isNaN(ticketId)) throw invalidDataError('ticketId');
 
-  const ticket = await ticketsRepository.getTicket(ticketId);
-
-  if (!ticket) throw invalidTicketIdError();
+  const ticket = await ticketsRepository.findTicketById(ticketId);
+  if (!ticket) throw notFoundError();
 
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (ticket.enrollmentId !== enrollment.id) throw unauthorizedError();
 
-  if (ticket.enrollmentId !== enrollment.id) throw unauthorizedAccessError();
+  return { ticket, enrollment };
+}
 
-  const payment = await paymentsRepository.getTicketPayment(ticketId);
+async function getPaymentByTicketId(userId: number, ticketId: number) {
+  await verifyTicketAndEnrollment(userId, ticketId);
+
+  const payment = await paymentsRepository.findPaymentByTicketId(ticketId);
 
   return payment;
 }
 
-async function createTicketPayment(ticketId: number, userId: number, cardData: CardData): Promise<Payment> {
-  const ticket = await ticketsRepository.getTicket(ticketId);
+async function paymentProcess(ticketId: number, userId: number, cardData: CardPaymentParams) {
+  const { ticket } = await verifyTicketAndEnrollment(userId, ticketId);
 
-  if (!ticket || !ticketId) throw invalidTicketIdError();
-  
-  const enrollment = await enrollmentRepository.findWithAddressByEnrollmentId(ticket.enrollmentId);
-  
-  if (!enrollment || enrollment.userId !== userId) throw unauthorizedAccessError();
-  
-  const ticketType: TicketType = await ticketsRepository.getTicketType(ticket.ticketTypeId);
-  
-  const paymentData: CreatePaymentData = {
+  const paymentData: PaymentParams = {
     ticketId,
-    value: ticketType.price,
+    value: ticket.TicketType.price,
     cardIssuer: cardData.issuer,
     cardLastDigits: cardData.number.toString().slice(-4),
   };
 
-  await paymentsRepository.createTicketPayment(paymentData);
-
-  await ticketsRepository.payTicket(ticketId);
-
-  const payment = await paymentsRepository.getTicketPayment(ticketId);
-
+  const payment = await paymentsRepository.createPayment(ticketId, paymentData);
+  await ticketsRepository.ticketProcessPayment(ticketId);
   return payment;
 }
 
 export const paymentsService = {
-  getTicketPayment,
-  createTicketPayment,
+  getPaymentByTicketId,
+  paymentProcess,
 };
