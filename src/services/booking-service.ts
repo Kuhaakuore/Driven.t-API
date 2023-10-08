@@ -33,9 +33,6 @@ async function validateUserBookingUpdate(userId: number, roomId: number) {
   const room = await hotelRepository.findRoomById(roomId);
   if (!room) throw notFoundError();
 
-  // const roomBooking = await bookingsRepository.getBookingByRoomId(roomId);
-  // if (!roomBooking) throw cannotBookRoom(`Room has not being booked yet`);
-
   const roomBookingsAmount = await bookingsRepository.getRoomBookingsAmount(roomId);
   if (room.capacity <= roomBookingsAmount)
     throw cannotBookRoom(`Room's maximum capacity reached cannot change your booking for this room`);

@@ -151,24 +151,6 @@ describe('Booking Service', () => {
       });
     });
 
-    // it('should throw an error if room has not being booked yet', async () => {
-    //   jest.spyOn(bookingsRepository, 'getBooking').mockImplementationOnce((): any => {
-    //     return { id: 1 };
-    //   });
-    //   jest.spyOn(hotelRepository, 'findRoomById').mockImplementationOnce((): any => {
-    //     return { capacity: 1 };
-    //   });
-    //   jest.spyOn(bookingsRepository, 'getBookingByRoomId').mockImplementationOnce((): any => {
-    //     return undefined;
-    //   });
-
-    //   const promise = bookingsService.validateUserBookingUpdate(1, 1);
-    //   expect(promise).rejects.toEqual({
-    //     name: 'CannotBookRoom',
-    //     message: `Room has not being booked yet`,
-    //   });
-    // });
-
     it('should throw an error if room is full', async () => {
       jest.spyOn(bookingsRepository, 'getBooking').mockImplementationOnce((): any => {
         return { id: 1 };
