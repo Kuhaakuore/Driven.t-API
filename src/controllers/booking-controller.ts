@@ -21,6 +21,6 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response) {
   const { bookingId } = req.params;
   const { body, userId } = req;
 
-  const result = await bookingsService.updateBooking(body, userId);
+  const result = await bookingsService.updateBooking(body, userId, Number(bookingId));
   return res.status(httpStatus.OK).send(result);
 }

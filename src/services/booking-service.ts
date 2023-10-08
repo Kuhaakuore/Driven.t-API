@@ -55,11 +55,11 @@ async function createBooking(body: InputBookingBody, userId: number) {
   return { bookingId: booking.id };
 }
 
-async function updateBooking(body: InputBookingBody, userId: number) {
+async function updateBooking(body: InputBookingBody, userId: number, bookingId: number) {
   const { roomId } = body;
   await validateUserBookingUpdate(userId, roomId);
 
-  const booking: Booking = await bookingsRepository.updateBooking(roomId, userId);
+  const booking: Booking = await bookingsRepository.updateBooking(roomId, bookingId);
   return { bookingId: booking.id };
 }
 

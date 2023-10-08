@@ -200,7 +200,7 @@ describe('POST /booking', () => {
       const room = await createRoomWithHotelId(hotel.id);
 
       const res = await server.post('/booking').set('Authorization', `Bearer ${token}`).send({ roomId: room.id });
-      const { status, body, text } = res;
+      const { status, body} = res;
       expect(status).toEqual(httpStatus.OK);
       expect(body).toMatchObject({
         bookingId: expect.any(Number),
@@ -338,7 +338,7 @@ describe('PUT /booking/:bookingId', () => {
 
       expect(status).toEqual(httpStatus.OK);
       expect(body).toMatchObject({
-        bookingId: expect.any(Number),
+        bookingId: oldRoomBooking.id,
       });
     });
   });
