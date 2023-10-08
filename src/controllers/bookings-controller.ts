@@ -2,7 +2,6 @@ import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
 import { bookingsService } from '@/services';
-import { InputBookingBody } from '@/protocols';
 
 export async function getBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -18,4 +17,10 @@ export async function createBooking(req: AuthenticatedRequest, res: Response) {
   return res.status(httpStatus.OK).send(result);
 }
 
-export async function updateBooking(req: AuthenticatedRequest, res: Response) {}
+export async function updateBooking(req: AuthenticatedRequest, res: Response) {
+  const { bookingId } = req.params;
+  const { body, userId } = req;
+
+  const result = await bookingsService.updateBooking(body, userId);
+  return res.status(httpStatus.OK).send(result);
+}
