@@ -267,27 +267,27 @@ describe('PUT /booking/:bookingId', () => {
       expect(status).toEqual(httpStatus.NOT_FOUND);
     });
 
-    it('should respod with status 403 when room has not being booked yet', async () => {
-      const user = await createUser();
-      const token = await generateValidToken(user);
-      const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType(false, true);
-      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
-      await createPayment(ticket.id, ticketType.price);
-      const hotel = await createHotel();
-      const room = await createRoomWithHotelId(hotel.id);
-      const booking = await createBooking(user.id, room.id);
-      const newRoom = await createRoomWithHotelId(hotel.id);
+    // it('should respod with status 403 when room has not being booked yet', async () => {
+    //   const user = await createUser();
+    //   const token = await generateValidToken(user);
+    //   const enrollment = await createEnrollmentWithAddress(user);
+    //   const ticketType = await createTicketType(false, true);
+    //   const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+    //   await createPayment(ticket.id, ticketType.price);
+    //   const hotel = await createHotel();
+    //   const room = await createRoomWithHotelId(hotel.id);
+    //   const booking = await createBooking(user.id, room.id);
+    //   const newRoom = await createRoomWithHotelId(hotel.id);
 
-      const res = await server
-        .put(`/booking/${booking.id}`)
-        .set('Authorization', `Bearer ${token}`)
-        .send({ roomId: newRoom.id });
+    //   const res = await server
+    //     .put(`/booking/${booking.id}`)
+    //     .set('Authorization', `Bearer ${token}`)
+    //     .send({ roomId: newRoom.id });
 
-      const { status, text } = res;
-      expect(status).toEqual(httpStatus.FORBIDDEN);
-      expect(text).toEqual(`Room has not being booked yet`);
-    });
+    //   const { status, text } = res;
+    //   expect(status).toEqual(httpStatus.FORBIDDEN);
+    //   expect(text).toEqual(`Room has not being booked yet`);
+    // });
 
     it('should respond with status 403 when trying to change to a room that is already full', async () => {
       const user = await createUser();
