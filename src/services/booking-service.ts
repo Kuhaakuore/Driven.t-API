@@ -67,4 +67,6 @@ export const bookingsService = {
   getBooking,
   createBooking,
   updateBooking,
+  validateUserBookingCreation,
+  validateUserBookingUpdate,
 };
